@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Overview } from "@/components/Dashboard/overview";
 import { RecentSales } from "@/components/Dashboard/recent-sales";
-import { Notifications } from "@/components/Dashboard/Main/Notification";
+import  Notifications  from "@/components/Dashboard/Main/Notification";
 import { Suspense } from "react";
 import  Reports  from "@/components/Dashboard/Main/Reports";
 import { Analytics } from './Main/Analytic';
