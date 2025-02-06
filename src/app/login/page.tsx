@@ -1,104 +1,79 @@
-"use client";
+'use client'
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useRouter } from 'next/navigation'
 
-export default function AdminLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [error, setError] = useState<string | null>(null); // Error state
+const schema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+})
 
-  const router = useRouter();
+type FormData = z.infer<typeof schema>
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true); // Start loading
-    setError(null); // Reset error state
+export default function LoginForm() {
+  const [error, setError] = useState('')
+  const router = useRouter()
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  })
 
-    // Simulate a delay for authentication (optional)
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay
+  const onSubmit = async (data: FormData) => {
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
 
-    try {
-      if (
-        email === process.env.NEXT_PUBLIC_ADMIN_EMAIL &&
-        password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
-      ) {
-        localStorage.setItem("isLoggedIn", "true");
-        router.push("/admin"); // Redirect to admin dashboard
-      } else {
-        setError("Invalid email or password"); // Set error message
-      }
-    } catch (err) {
-      setError("An error occurred. Please try again."); // Handle unexpected errors
-    } finally {
-      setIsLoading(false); // Stop loading
+    if (response.ok) {
+      router.push('/admin')
+    } else {
+      setError('Invalid email or password')
     }
-  };
+  }
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form onSubmit={handleLogin} className="bg-white p-6 rounded shadow-md w-96">
-        <h2 className="text-xl font-bold mb-4">Admin Login</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-6 rounded shadow-md w-96">
+        <h2 className="text-xl font-bold mb-4">
+          Admin Login</h2>
+        <div className="mb-4  w-96 p-6">
+          <label htmlFor="email" className="block text-lg font-bold text-black mb-2">
+            Email
+          </label>
+          <input
+            {...register('email')}
+            type="email"
+            id="email"
+            className="w-full px-4 py-3 rounded-lg  bg-opacity-20 border border-opacity-30 focus:border-black focus:ring-2 focus:ring-black text-black placeholder-white placeholder-opacity-70 transition duration-200"
+            placeholder="your@email.com"
+          />
+          {errors.email && <p className="mt-2 text-sm text-black font-medium">{errors.email.message}</p>}
+        </div>
+        <div className="mb-4">
+          <label htmlFor="password" className="block text-lg font-bold text-black mb-2">
+            Password
+          </label>
+          <input
+            {...register('password')}
+            type="password"
+            id="password"
+            className="w-full px-4 py-3 rounded-lg bg-white bg-opacity-20 border border-black border-opacity-30 focus:border-yellow-300 focus:ring-2 focus:ring-yellow-300 text-white placeholder-white placeholder-opacity-70 transition duration-200"
+            placeholder="••••••••"
+          />
+          {errors.password && <p className="mt-2 text-sm text-yellow-200 font-medium">{errors.password.message}</p>}
+          {error && <p className="text-sm text-yellow-200 font-medium mb-4">{error}</p>}
+          <button
+            type="submit"
+            className="w-full py-3 px-4 bg-black text-white font-bold rounded-lg shadow-md hover:shadow-lg transition hover:scale-105 duration-300 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
+          >
+            Sign In
+          </button>
+        </div>
 
-        {/* Email Input */}
-        <input
-          type="email"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 mb-4 border border-gray-300 rounded"
-          value={email}
-          required
-        />
-
-        {/* Password Input */}
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-4 border border-gray-300 rounded"
-          value={password}
-          required
-        />
-
-        {/* Error Message */}
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-
-        {/* Login Button */}
-        <button
-          type="submit"
-          className="bg-black text-white px-4 py-2 rounded w-full flex justify-center items-center"
-          disabled={isLoading} // Disable button while loading
-        >
-          {isLoading ? (
-            <div className="flex items-center">
-              <svg
-                className="animate-spin h-5 w-5 mr-3 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              wait a moment!...
-            </div>
-          ) : (
-            "Login"
-          )}
-        </button>
       </form>
     </div>
-  );
+  )
 }
