@@ -3,7 +3,7 @@ import client from "./../../../../lib/sanityClient"
 
 export async function GET(req: Request) {
   try {
-    const products = await client.fetch(*[_type == "product"])
+    const products = await client.fetch(`*[_type == "product"]`)
     return NextResponse.json({ success: true, data: products })
   } catch (error) {
     console.error("Error fetching products:", error)
@@ -43,7 +43,7 @@ export async function PUT(req: Request) {
     }
 
     // Find the product by name using a more reliable query
-    const existingProduct = await client.fetch(*[_type == "product" && productName == $productName][0], {
+    const existingProduct = await client.fetch(`*[_type == "product" && productName == $productName][0]`, {
       productName: productData.productName,
     })
 
@@ -80,11 +80,11 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ success: false, message: "Missing product ID" }, { status: 400 })
     }
 
-    console.log(Attempting to delete product with ID: ${productId})
+    console.log(`Attempting to delete product with ID: ${productId}`)
 
     await client.delete(productId)
 
-    console.log(Product deleted successfully: ${productId})
+    console.log(`Product deleted successfully: ${productId}`)
 
     return NextResponse.json({ success: true, message: "Product deleted successfully" }, { status: 200 })
   } catch (error) {
