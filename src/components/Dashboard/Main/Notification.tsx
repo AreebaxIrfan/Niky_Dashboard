@@ -26,7 +26,41 @@ interface Notification {
   time: string
 }
 
-export function Notifications() {
+
+interface NotificationsProps {
+
+  data: {
+
+    totalRevenue: number;
+
+    totalOrders: number;
+
+    totalCustomers: number;
+
+    totalProducts: number;
+
+    totalReviews: number;
+
+    orders: any[];
+
+    customers: any[];
+
+    reviews: any[];
+
+  };
+
+}
+
+
+
+
+
+
+const Notifications = ({ data }: NotificationsProps) => {
+
+
+
+
   const [notifications, setNotifications] = useState<Notification[]>([])
 
   useEffect(() => {
@@ -108,3 +142,4 @@ export function Notifications() {
   )
 }
 
+export default Notifications
