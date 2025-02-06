@@ -1,15 +1,11 @@
 import { NextResponse } from "next/server"
 import client from "./../../../../lib/sanityClient"
+import data from "@/data/products.json"
 
-export async function GET(req: Request) {
-  try {
-    const products = await client.fetch(`*[_type == "product"]`)
-    return NextResponse.json({ success: true, data: products })
-  } catch (error) {
-    console.error("Error fetching products:", error)
-    return NextResponse.json({ success: false, message: "Error fetching products" }, { status: 500 })
-  }
+export function GET() {
+  return NextResponse.json({ success: true, data: data })
 }
+
 
 export async function POST(req: Request) {
   try {
