@@ -1,5 +1,5 @@
 import Sidebar from '@/components/Sidebar';
-import Link from 'next/link'
+// import Link from 'next/link'
 import React from 'react'
 
 export default function Layout({
@@ -54,3 +54,4 @@ export default function Layout({
     </div>
   )
 }
+
