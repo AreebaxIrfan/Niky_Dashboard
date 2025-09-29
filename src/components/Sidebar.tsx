@@ -104,13 +104,17 @@ const Sidebar = () => {
 
       {/* Overlay for Mobile */}
       {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden cursor-pointer"
-          onClick={() => setIsSidebarOpen(false)}
-        ></div>
-      )}
+  <button
+    type="button"
+    aria-label="Close sidebar overlay"
+    className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden cursor-pointer"
+    onClick={() => setIsSidebarOpen(false)}
+  />
+)}
+
     </div>
   );
 };
+
 
 export default Sidebar;
