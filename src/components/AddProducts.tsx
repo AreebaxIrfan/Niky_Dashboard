@@ -104,7 +104,7 @@ export default function AddProductForm({ onClose, onProductAdded, product }: Add
         ...(imageAsset && { image: imageAsset }),
       }
 
-      const url = isEditing ? "/api/products" : "/api/products"
+const url = isEditing ? `/api/products/${product?.slug.current}` : "/api/products"
       const method = isEditing ? "PUT" : "POST"
 
       const productDataWithName = {
@@ -286,4 +286,5 @@ export default function AddProductForm({ onClose, onProductAdded, product }: Add
     </div>
   )
 }
+
 
